@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace= "xyz.redpaper.red.spider.wx.dao.PostMapper" >
+    <resultMap id ="PostMap" type="xyz.redpaper.red.spider.wx.entity.Post">
+        <result column="ID" property="id"/>
+        <result column="post_author" property="postAuthor"/>
+        <result column="post_date" property="postDate"/>
+        <result column="post_date_gmt" property="postDateGmt"/>
+        <result column="post_content" property="postContent"/>
+        <result column="post_title" property="postTitle"/>
+    </resultMap>
+
+    <select id = "findById" resultMap="PostMap">
+        select ID, post_author, post_date, post_date_gmt, post_content, post_title
+          from wp_posts
+    </select>
+
+    <select id="findMaxId" resultType="java.lang.Long">
+        select max(ID) from wp_posts;
+    </select>
+</mapper>
