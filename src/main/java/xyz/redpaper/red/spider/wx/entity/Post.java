@@ -1,30 +1,60 @@
 package xyz.redpaper.red.spider.wx.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
+@Entity
+@Table(name = "wp_posts")
 public class Post {
+    @Id
+    @Column(name = "ID")
     private Long id;
+    @Column
     private Long postAuthor;
+    @Column
     private Date postDate;
+    @Column
     private Date postDateGmt;
+    @Column
     private String postContent;
+    @Column
     private String postTitle;
+    @Column
     private String postExcerpt;
+    @Column
     private String postStatus;
+    @Column
     private String commentStatus;
+    @Column
     private String pingStatus;
+    @Column
     private String postPassword;
+    @Column
     private String postName;
+    @Column
     private String toPing;
+    @Column
     private String pinged;
+    @Column
     private Date postModified;
+    @Column
     private Date postModifiedGmt;
+    @Column
     private String postContentFiltered;
+    @Column
     private Long postParent;
+    @Column
     private String guid;
+    @Column
     private Integer menuOrder;
+    @Column
     private String postType;
+    @Column
     private String postMimeType;
+    @Column
     private Long commentCount;
 
     public Long getId() {
@@ -209,5 +239,34 @@ public class Post {
 
     public void setCommentCount(Long commentCount) {
         this.commentCount = commentCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", postAuthor=" + postAuthor +
+                ", postDate=" + postDate +
+                ", postDateGmt=" + postDateGmt +
+                ", postContent='" + postContent + '\'' +
+                ", postTitle='" + postTitle + '\'' +
+                ", postExcerpt='" + postExcerpt + '\'' +
+                ", postStatus='" + postStatus + '\'' +
+                ", commentStatus='" + commentStatus + '\'' +
+                ", pingStatus='" + pingStatus + '\'' +
+                ", postPassword='" + postPassword + '\'' +
+                ", postName='" + postName + '\'' +
+                ", toPing='" + toPing + '\'' +
+                ", pinged='" + pinged + '\'' +
+                ", postModified=" + postModified +
+                ", postModifiedGmt=" + postModifiedGmt +
+                ", postContentFiltered='" + postContentFiltered + '\'' +
+                ", postParent=" + postParent +
+                ", guid='" + guid + '\'' +
+                ", menuOrder=" + menuOrder +
+                ", postType='" + postType + '\'' +
+                ", postMimeType='" + postMimeType + '\'' +
+                ", commentCount=" + commentCount +
+                '}';
     }
 }
