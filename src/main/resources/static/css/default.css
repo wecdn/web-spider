@@ -1,0 +1,23 @@
+html, body, div, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, ol, ul, p, hr, li, table, tr, td, input, span, textarea, text{
+    margin: 0;
+    padding: 0;
+}
+
+.layout-div-center{
+    margin: 0 auto;
+}
+
+.width-percent-90{
+    width: 90%;
+}
+.width-percent-60{
+    width: 60%;
+}
+
+.border-blue{
+    border: 1px solid blue ;
+}
+
+.padding-10px{
+    padding: 10px;
+}

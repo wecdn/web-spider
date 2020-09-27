@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微信公众号文章爬虫</title>
+
+    <script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
+    <script type="application/javascript" src="js/wx/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/default.css">
+    <link rel="stylesheet" type="text/css" href="css/wx/wx.css">
+</head>
+<body>
+    <div class="layout-div-center width-percent-90 border-blue padding-10px">
+        <div>
+            <span>文章链接：</span>
+            <input type="text" id="articleUrl" class="width-percent-60"/>
+            <input type="button" id="btnGetWordPressArticle" value=" 解析 " />
+        </div>
+
+        <div>
+            <span>这是今天的第几篇文章(001开始)：</span>
+            <input type="text" id="articleOrder"/>
+        </div>
+
+        <div>
+            <span>文章类型：</span>
+            <select id="articleType">
+                <option value="uncategorized">未分类</option>
+                <option value="tech">科技</option>
+                <option value="finance">财经</option>
+                <option value="work">职场</option>
+                <option value="life">生活</option>
+                <option value="travel">旅游</option>
+                <option value="web">网站</option>
+                <option value="car">汽车</option>
+                <option value="web">网站</option>
+                <option value="game">游戏</option>
+                <option value="history">历史</option>
+                <option value="health">健康</option>
+            </select>
+        </div>
+
+        <div>
+            <span>文章标题：</span>
+            <input type="text" id="articleTitle" class="width-percent-60" disabled/>
+        </div>
+
+        <div>
+            <span>文章简体内容：</span>
+            <textarea id="simplifiedArticleContent" cols="150" rows="15"></textarea>
+        </div>
+
+        <div>
+            <span>文章繁体内容：</span>
+            <textarea id="traditionalArticleContent" cols="150" rows="15"></textarea>
+        </div>
+    </div>
+
+
+</body>
+</html>
