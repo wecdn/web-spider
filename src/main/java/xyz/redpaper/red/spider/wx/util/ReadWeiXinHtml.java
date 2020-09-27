@@ -73,20 +73,12 @@ public class ReadWeiXinHtml {
      * @throws IOException
      */
     private static StringBuilder imgHandler(Element e, String title, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath) throws IOException, InterruptedException {
-
         String imgSrc = e.attr("data-src");
         String imgFormat = e.attr("data-type");
-        if(!"bmp".equalsIgnoreCase(imgFormat) && !"jpg".equalsIgnoreCase(imgFormat) &&
-                !"jpeg".equalsIgnoreCase(imgFormat) && !"jpg".equalsIgnoreCase(imgFormat) &&
-                !"png".equalsIgnoreCase(imgFormat) && !"tif".equalsIgnoreCase(imgFormat) &&
-                !"pcx".equalsIgnoreCase(imgFormat) &&
-                !"tga".equalsIgnoreCase(imgFormat) && !"exif".equalsIgnoreCase(imgFormat) &&
-                !"fpx".equalsIgnoreCase(imgFormat) && !"svg".equalsIgnoreCase(imgFormat) &&
-                !"psd".equalsIgnoreCase(imgFormat) && !"cdr".equalsIgnoreCase(imgFormat) &&
-                !"pcd".equalsIgnoreCase(imgFormat) && !"dxf".equalsIgnoreCase(imgFormat) &&
-                !"ufo".equalsIgnoreCase(imgFormat) && !"eps".equalsIgnoreCase(imgFormat) &&
-                !"ai".equalsIgnoreCase(imgFormat) && !"raw".equalsIgnoreCase(imgFormat) &&
-                !"wmf".equalsIgnoreCase(imgFormat) && !"webp".equalsIgnoreCase(imgFormat)){
+        //图片格式处理
+        if("jpeg".equalsIgnoreCase(imgFormat)){
+            imgFormat = "jpg";
+        }else if(!"png".equalsIgnoreCase(imgFormat)){
             imgFormat = "jpg";
         }
         URL imgUrl = new URL(imgSrc);
@@ -100,11 +92,10 @@ public class ReadWeiXinHtml {
                 os.write(buf, 0, p);
             }
         }
-        /*Thumbnails.of(localImgCachePath + File.separator + imgName)
-                .imageType(BufferedImage.TYPE_INT_ARGB)
-                .scale(1.00f)
-                .outputQuality(0.5f)
-                .toFile(localImgCachePath + File.separator + "thumb" + File.separator + imgName);*/
+        //图片压缩
+        String picIn = localImgCachePath + File.separator + imgName;
+        String picOut = localImgCachePath + File.separator + "thumb" + File.separator + imgName;
+        thumbPic(imgFormat, picIn, picOut);
         StringBuilder str = new StringBuilder();
         str.append("https://cdn.jsdelivr.net/gh/wecdn/red01@master");
         //git目录
@@ -140,5 +131,21 @@ public class ReadWeiXinHtml {
         str.append(imgFormat);
         Thread.sleep(3000);
         return str;
+    }
+
+    /**
+     * 图片压缩
+     * @param picIn
+     * @param picOut
+     * @throws IOException
+     */
+    public static void thumbPic(String imgFormat, String picIn, String picOut) throws IOException {
+        if("jpeg".equalsIgnoreCase(imgFormat) || "png".equalsIgnoreCase(imgFormat)){
+            Thumbnails.of(picIn)
+                    .imageType(BufferedImage.TYPE_INT_ARGB)
+                    .scale(1.00f)
+                    .outputQuality(0.5f)
+                    .toFile(picOut);
+        }
     }
 }
