@@ -6,12 +6,19 @@ import org.jsoup.nodes.Document;
 import xyz.redpaper.red.msg.YesApi;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class YesApiUtils {
 
-    public static void main(String[] args) {
-        YesApi yesApi = s2t("本站对作者上传的内容将尽可能审核来源及出处，但对内容不作任何保证或承诺。其真实性及合法性请读者自行核实。如您发现图文内容有误或侵犯了您的权益请告知，本站将及时予以修改或删除。");
+    /**
+     * 单元测试
+     * @param args
+     * @throws UnsupportedEncodingException
+     */
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        YesApi yesApi = s2t("<div class=\"rich\">哈打发斯蒂芬，让他问题</div>");
         System.out.println(null==yesApi);
         System.out.println(!"200".equals(yesApi.getRet()));
         System.out.println(null==yesApi.getData());
@@ -21,12 +28,20 @@ public class YesApiUtils {
         }
     }
 
-    public static YesApi s2t(String s) {
+    /**
+     * 简体中文转繁体中文
+     * 1. yesapi接口每个月最多调用10万次
+     * 2. yesapi接口有效期至2020-12-24
+     * @param s 中文简体内容
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    public static YesApi s2t(String s) throws UnsupportedEncodingException {
         YesApi api = new YesApi();
         StringBuilder url = new StringBuilder("http://hb9.api.yesapi.cn/?s=App.Opencc.Convert");
         url.append("&return_data=0");
         url.append("&text=");
-        url.append(s);
+        url.append(URLEncoder.encode(s, "UTF-8"));
         url.append("&type=s2t");
         url.append("&app_key=649DB87D2A8CA150DDB97A2B784D297C&sign=7809F5F458C80DF9FE48B9BCF76A8C79");
         try {

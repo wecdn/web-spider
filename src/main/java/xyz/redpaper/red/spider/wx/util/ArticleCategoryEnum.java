@@ -14,7 +14,8 @@ public enum ArticleCategoryEnum {
     CAR("car", 10),
     GAME("game", 11),
     HISTORY("history", 20),
-    HEALTH("health", 21);
+    HEALTH("health", 21),
+    HOUSE("house", 26);
 
     private String type;
     private Integer typeId;

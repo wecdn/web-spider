@@ -32,6 +32,7 @@ public class WxReaderService {
         //繁体内容
         YesApi yesApi = new YesApi();
         int tryTime = 4;
+        //yesapi接口可能会失败
         do{
             yesApi = YesApiUtils.s2t(simplifiedArticleContent.toString());
             tryTime--;
@@ -45,6 +46,5 @@ public class WxReaderService {
         rd.setData(map);
         return rd;
     }
-
 
 }

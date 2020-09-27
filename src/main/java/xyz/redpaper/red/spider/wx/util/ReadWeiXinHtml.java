@@ -1,23 +1,46 @@
 package xyz.redpaper.red.spider.wx.util;
 
+import net.coobird.thumbnailator.Thumbnails;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 
 /**
  * 读取微信订阅号内容
- * 最终目的：生成与原文章一样的html字符串，并且符合wordpress格式
+ * 最终目的：爬取与原文章一样的html
  */
 public class ReadWeiXinHtml {
 
     /**
+     * 单元测试
+     * @param args
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void main(String[] args) throws IOException, InterruptedException {
+        StringBuilder sb = new StringBuilder();
+        String title = wxArticleSpider("https://mp.weixin.qq.com/s/ChwpBU12l_lh6MsVHHzDdA", ArticleCategoryEnum.HOUSE, "001", "D://today", sb);
+        System.out.println("文章标题: "+ title);
+        System.out.println("简体中文文章内容: " + sb);
+    }
+
+    /**
      * 微信公众号爬虫
+     * @param urlStr 爬取目标url
+     * @param cat 文章分类
+     * @param articleOrder 文章序号
+     * @param localImgCachePath 图片本地缓存路径
+     * @param simplifiedArticleContent 简体中文文章内容
+     * @return 文章标题
+     * @throws IOException
+     * @throws InterruptedException
      */
     public static String wxArticleSpider(String urlStr, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath, StringBuilder simplifiedArticleContent) throws IOException, InterruptedException {
         URL url = new URL(urlStr);
@@ -26,109 +49,77 @@ public class ReadWeiXinHtml {
         Element js_article = doc.getElementById("js_article");
         //标题
         String title = js_article.getElementById("activity-name").text();
-        System.out.println("===文章标题："+title);
-        //文章内容
+        //文章内容元素
         Element js_content = js_article.getElementById("js_content");
         Elements elements = js_content.getAllElements();
+        //改变img的来源
         for (Element e : elements) {
-            if ("p".equals(e.tagName())) {
-                simplifiedArticleContent.append("<!-- wp:paragraph -->");
-                simplifiedArticleContent.append("<p>");
-                simplifiedArticleContent.append(e.text());
-                simplifiedArticleContent.append("</p>");
-                simplifiedArticleContent.append("<!-- /wp:paragraph -->");
-            } else if("span".equals(e.tagName())){
-                simplifiedArticleContent.append(e.text());
-            }else if ("img".equals(e.tagName())) {
-                simplifiedArticleContent.append("<!-- wp:image {\"sizeSlug\":\"large\"} -->");
-                simplifiedArticleContent.append(imgHandler(e, title, cat, articleOrder, localImgCachePath));
-                simplifiedArticleContent.append("<!-- /wp:image -->");
-            } else if ("h1".equals(e.tagName())) {
-                simplifiedArticleContent.append("<!-- wp:heading -->");
-                simplifiedArticleContent.append("<h1>");
-                simplifiedArticleContent.append(e.text());
-                simplifiedArticleContent.append("</h1>");
-                simplifiedArticleContent.append("<!-- /wp:heading -->");
-            }else if ("h2".equals(e.tagName())) {
-                simplifiedArticleContent.append("<!-- wp:heading -->");
-                simplifiedArticleContent.append("<h2>");
-                simplifiedArticleContent.append(e.text());
-                simplifiedArticleContent.append("</h2>");
-                simplifiedArticleContent.append("<!-- /wp:heading -->");
-            }else if ("h3".equals(e.tagName())) {
-                simplifiedArticleContent.append("<!-- wp:heading -->");
-                simplifiedArticleContent.append("<h3>");
-                simplifiedArticleContent.append(e.text());
-                simplifiedArticleContent.append("</h3>");
-                simplifiedArticleContent.append("<!-- /wp:heading -->");
-            }else if ("h4".equals(e.tagName())) {
-                simplifiedArticleContent.append("<!-- wp:heading -->");
-                simplifiedArticleContent.append("<h4>");
-                simplifiedArticleContent.append(e.text());
-                simplifiedArticleContent.append("</h4>");
-                simplifiedArticleContent.append("<!-- /wp:heading -->");
-            }else if ("h5".equals(e.tagName())) {
-                simplifiedArticleContent.append("<!-- wp:heading -->");
-                simplifiedArticleContent.append("<h5>");
-                simplifiedArticleContent.append(e.text());
-                simplifiedArticleContent.append("</h5>");
-                simplifiedArticleContent.append("<!-- /wp:heading -->");
-            }else if ("h6".equals(e.tagName())) {
-                simplifiedArticleContent.append("<!-- wp:heading -->");
-                simplifiedArticleContent.append("<h6>");
-                simplifiedArticleContent.append(e.text());
-                simplifiedArticleContent.append("</h6>");
-                simplifiedArticleContent.append("<!-- /wp:heading -->");
+            if("img".equals(e.tagName())){
+                StringBuilder gitImgPath = imgHandler(e, title, cat, articleOrder, localImgCachePath);
+                e.attr("data-src", gitImgPath.toString());
             }
         }
+        simplifiedArticleContent.append(js_content.html());
         return title;
     }
 
     /**
-     * 处理公众号里面的图片
-     * 返回数据格式举例: <figure class="wp-block-image size-large">
-     *                    <img src="https://cdn.jsdelivr.net/gh/wecdn/red01@master/2020/09/20200919_001_201009_web.png"
-     *                         alt="哼哼哈嘿" />
-     *                </figure>
+     * 1. 下载公众号里面的图片
+     * 2. 获取github图片地址
+     * 返回数据格式举例: https://cdn.jsdelivr.net/gh/wecdn/red01@master/2020/09/20200919_001_201009_web.png
      * @param e
      * @param title
-     * @return
+     * @return github图片地址
      * @throws IOException
      */
     private static StringBuilder imgHandler(Element e, String title, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath) throws IOException, InterruptedException {
+
         String imgSrc = e.attr("data-src");
         String imgFormat = e.attr("data-type");
+        if(!"bmp".equalsIgnoreCase(imgFormat) && !"jpg".equalsIgnoreCase(imgFormat) &&
+                !"jpeg".equalsIgnoreCase(imgFormat) && !"jpg".equalsIgnoreCase(imgFormat) &&
+                !"png".equalsIgnoreCase(imgFormat) && !"tif".equalsIgnoreCase(imgFormat) &&
+                !"pcx".equalsIgnoreCase(imgFormat) &&
+                !"tga".equalsIgnoreCase(imgFormat) && !"exif".equalsIgnoreCase(imgFormat) &&
+                !"fpx".equalsIgnoreCase(imgFormat) && !"svg".equalsIgnoreCase(imgFormat) &&
+                !"psd".equalsIgnoreCase(imgFormat) && !"cdr".equalsIgnoreCase(imgFormat) &&
+                !"pcd".equalsIgnoreCase(imgFormat) && !"dxf".equalsIgnoreCase(imgFormat) &&
+                !"ufo".equalsIgnoreCase(imgFormat) && !"eps".equalsIgnoreCase(imgFormat) &&
+                !"ai".equalsIgnoreCase(imgFormat) && !"raw".equalsIgnoreCase(imgFormat) &&
+                !"wmf".equalsIgnoreCase(imgFormat) && !"webp".equalsIgnoreCase(imgFormat)){
+            imgFormat = "jpg";
+        }
         URL imgUrl = new URL(imgSrc);
         URLConnection conn = imgUrl.openConnection();
-        InputStream is = conn.getInputStream();
         String imgName = getImgName(imgFormat, cat, articleOrder).toString();
-        OutputStream os = new FileOutputStream(new File(localImgCachePath, imgName));
-        byte[] buf = new byte[1024];
-        int p = 0;
-        while ((p = is.read(buf)) != -1) {
-            os.write(buf, 0, p);
+        try(InputStream is = conn.getInputStream();
+            OutputStream os = new FileOutputStream(new File(localImgCachePath, imgName))){
+            byte[] buf = new byte[1024];
+            int p = 0;
+            while ((p = is.read(buf)) != -1) {
+                os.write(buf, 0, p);
+            }
         }
+        /*Thumbnails.of(localImgCachePath + File.separator + imgName)
+                .imageType(BufferedImage.TYPE_INT_ARGB)
+                .scale(1.00f)
+                .outputQuality(0.5f)
+                .toFile(localImgCachePath + File.separator + "thumb" + File.separator + imgName);*/
         StringBuilder str = new StringBuilder();
-        str.append("<figure class=\"wp-block-image size-large\">");
-        str.append("<img src=\"https://cdn.jsdelivr.net/gh/wecdn/red01@master");
+        str.append("https://cdn.jsdelivr.net/gh/wecdn/red01@master");
         //git目录
         str.append(TimeUtils.getGitDatePath());
         //图片名称
         str.append(imgName);
-        str.append("\"");
-        str.append("alt=\"");
-        str.append(title);
-        str.append("\"");
-        str.append("/>");
-        str.append("</figure>");
         return str;
     }
 
     /**
-     * 获取图片名称
+     * 获取图片名称(包括后缀名)
      * 图片名称格式举例：20200922_001_230215_web.png
-     * @param imgFormat
-     * @param cat
+     * 注意: 当前方法每次执行后会休眠几秒，防止获取的时间戳一致
+     * @param imgFormat 图片格式
+     * @param cat 文章类型
      * @return
      */
     private static StringBuilder getImgName(String imgFormat, ArticleCategoryEnum cat, String articleOrder) throws InterruptedException {
@@ -147,7 +138,7 @@ public class ReadWeiXinHtml {
         //图片格式
         str.append(".");
         str.append(imgFormat);
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         return str;
     }
 }
