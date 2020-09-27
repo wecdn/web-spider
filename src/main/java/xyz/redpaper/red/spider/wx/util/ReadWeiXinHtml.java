@@ -26,7 +26,7 @@ public class ReadWeiXinHtml {
      */
     public static void main(String[] args) throws IOException, InterruptedException {
         StringBuilder sb = new StringBuilder();
-        String title = wxArticleSpider("https://mp.weixin.qq.com/s/ChwpBU12l_lh6MsVHHzDdA", ArticleCategoryEnum.HOUSE, "001", "D://today", sb);
+        String title = wxArticleSpider("https://mp.weixin.qq.com/s/ChwpBU12l_lh6MsVHHzDdA", ArticleCategoryEnum.HOUSE, "001", "D://today", "D://today/git", sb);
         System.out.println("文章标题: "+ title);
         System.out.println("简体中文文章内容: " + sb);
     }
@@ -42,7 +42,7 @@ public class ReadWeiXinHtml {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static String wxArticleSpider(String urlStr, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath, StringBuilder simplifiedArticleContent) throws IOException, InterruptedException {
+    public static String wxArticleSpider(String urlStr, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath, String localImgGitPath, StringBuilder simplifiedArticleContent) throws IOException, InterruptedException {
         URL url = new URL(urlStr);
         Document doc = Jsoup.parse(url, 10000);
         //文章板块
@@ -55,7 +55,7 @@ public class ReadWeiXinHtml {
         //改变img的来源
         for (Element e : elements) {
             if("img".equals(e.tagName())){
-                StringBuilder gitImgPath = imgHandler(e, title, cat, articleOrder, localImgCachePath);
+                StringBuilder gitImgPath = imgHandler(e, title, cat, articleOrder, localImgCachePath, localImgGitPath);
                 e.attr("data-src", gitImgPath.toString());
             }
         }
@@ -72,7 +72,7 @@ public class ReadWeiXinHtml {
      * @return github图片地址
      * @throws IOException
      */
-    private static StringBuilder imgHandler(Element e, String title, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath) throws IOException, InterruptedException {
+    private static StringBuilder imgHandler(Element e, String title, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath, String localImgGitPath) throws IOException, InterruptedException {
         String imgSrc = e.attr("data-src");
         String imgFormat = e.attr("data-type");
         //图片格式处理
@@ -94,7 +94,7 @@ public class ReadWeiXinHtml {
         }
         //图片压缩
         String picIn = localImgCachePath + File.separator + imgName;
-        String picOut = localImgCachePath + File.separator + "thumb" + File.separator + imgName;
+        String picOut = localImgGitPath + File.separator + imgName;
         thumbPic(imgFormat, picIn, picOut);
         StringBuilder str = new StringBuilder();
         str.append("https://cdn.jsdelivr.net/gh/wecdn/red01@master");

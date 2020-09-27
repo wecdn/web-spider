@@ -15,6 +15,7 @@ public enum ArticleCategoryEnum {
     GAME("game", 11),
     HISTORY("history", 20),
     HEALTH("health", 21),
+    DEV("dev", 23),
     HOUSE("house", 26);
 
     private String type;

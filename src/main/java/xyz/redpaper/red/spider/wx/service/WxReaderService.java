@@ -21,6 +21,8 @@ public class WxReaderService {
      */
     @Value("${article.wx.img.local.cache.path}")
     private String localImgCachePath;
+    @Value("${article.wx.img.local.git.path}")
+    private String localImgGitPath;
 
     public ReturnData getWordPressArticleFormWx(String articleUrl, String articleOrder, String articleType) throws IOException, InterruptedException {
         ReturnData rd = new ReturnData();
@@ -28,7 +30,8 @@ public class WxReaderService {
         ArticleCategoryEnum articleTypeEnum = ArticleCategoryEnum.getByType(articleType);
         StringBuilder simplifiedArticleContent = new StringBuilder();
         //简体内容
-        String articleTitle = ReadWeiXinHtml.wxArticleSpider(articleUrl, articleTypeEnum, articleOrder, localImgCachePath, simplifiedArticleContent);
+        String articleTitle = ReadWeiXinHtml.wxArticleSpider(articleUrl, articleTypeEnum, articleOrder, localImgCachePath, localImgGitPath, simplifiedArticleContent);
+        System.out.println("简体内容: "+ simplifiedArticleContent);
         //繁体内容
         YesApi yesApi = new YesApi();
         int tryTime = 4;
