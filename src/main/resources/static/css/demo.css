@@ -22,23 +22,6 @@ body {
 	font-family: 'Raleway', Arial, sans-serif;
 }
 
-body::before,
-body::after {
-	content: '';
-	position: fixed;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 25px;
-	background: #fff;
-	z-index: 1001;
-}
-
-body::after {
-	top: auto;
-	bottom: 0;
-}
-
 a {
 	color: #1e6fa4;
 	text-decoration: none;

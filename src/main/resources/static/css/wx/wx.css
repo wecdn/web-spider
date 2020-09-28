@@ -5,43 +5,40 @@ body {
 #container {
     width: 850px;
     height: 150px;
-    margin: 0 auto;
+    margin: 250px auto;
 }
 .parameter-category{
     float: left;
     width: 15%;
-    padding: 250px 5px;
 }
 .parameter-order{
     float: left;
     width: 15%;
-    padding: 250px 5px;
 }
 .search {
     float: left;
     width: 70%;
-    padding: 250px 5px;
 }
 .analysis-input {
-    width:89%;
-    height:42px;
-    padding-left:13px;
-    border:2px solid #c5464a;
-    border-radius:5px;
-    background:transparent;
-    top:0;
-    right:0;
+    width: 89%;
+    height: 42px;
+    padding-left: 13px;
+    border: 2px solid #c5464a;
+    border-radius: 5px;
+    background: transparent;
+    top: 0;
+    right: 0;
 }
 .analysis-btn {
-    height:42px;
-    width:10%;
-    cursor:pointer;
+    height: 42px;
+    width: 10%;
+    cursor: pointer;
     float: right;
-    font-size:13px;
-    color:#F9F0DA;
-    background:#c5464a;
-    border-radius:0 5px 5px 0;
-    width:60px;
-    top:0;
-    right:0;
+    font-size: 13px;
+    color: #F9F0DA;
+    background: #c5464a;
+    border-radius: 0 5px 5px 0;
+    width: 60px;
+    top: 0;
+    right: 0;
 }

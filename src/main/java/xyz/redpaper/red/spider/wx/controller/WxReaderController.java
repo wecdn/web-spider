@@ -24,19 +24,42 @@ public class WxReaderController {
         return "wx/index";
     }
 
-    @GetMapping("/wx/get")
+    /**
+     * 测试
+     * @return
+     * @throws InterruptedException
+     */
+    @GetMapping("/wx/analysis/test")
     @ResponseBody
-    public ReturnData getWordPressArticleFormWx(HttpServletRequest request){
+    public ReturnData test() throws InterruptedException {
+        ReturnData rd = new ReturnData();
+        Thread.sleep(2000);
+        System.out.println("===测试===");
+        return rd;
+    }
+
+    /**
+     * 解析微信文章
+     * @param request
+     * @return
+     */
+    @GetMapping("/wx/analysis")
+    @ResponseBody
+    public ReturnData analysisWx(HttpServletRequest request){
         ReturnData rd = new ReturnData();
         try {
             String articleUrl = request.getParameter("articleUrl");
             String articleOrder = request.getParameter("articleOrder");
             String articleType = request.getParameter("articleType");
-            rd = wxReaderService.getWordPressArticleFormWx(articleUrl, articleOrder, articleType);
+            rd = wxReaderService.analysisWx(articleUrl, articleOrder, articleType);
+            if(ReturnData.STATE_NO.equals(rd.getState())){
+                //删除文件
+                wxReaderService.clearFile();
+            }
         }catch(Exception e){
-            logger.error("发生异常: {}", e.getMessage(), e);
+            logger.error("解析微信文章发生异常: {}", e.getMessage(), e);
             rd.setState(ReturnData.STATE_NO);
-            rd.setData("发生异常");
+            rd.setData("解析微信文章发生异常");
         }
         return rd;
     }
