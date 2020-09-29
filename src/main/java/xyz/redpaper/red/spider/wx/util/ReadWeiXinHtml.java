@@ -31,7 +31,7 @@ public class ReadWeiXinHtml {
     public static void main(String[] args) throws IOException, InterruptedException {
         StringBuilder sb = new StringBuilder();
         Map<String, List<String>> cache = new HashMap<String, List<String>>();
-        String title = wxArticleSpider("https://mp.weixin.qq.com/s/ChwpBU12l_lh6MsVHHzDdA", ArticleCategoryEnum.HOUSE, "001", "D://today", "D://today/git", sb, cache);
+        String title = wxArticleSpider("https://mp.weixin.qq.com/s/ChwpBU12l_lh6MsVHHzDdA", ArticleCategoryEnum.HOUSE, "001", "D://today", sb);
         System.out.println("文章标题: "+ title);
         System.out.println("简体中文文章内容: " + sb);
     }
@@ -43,12 +43,11 @@ public class ReadWeiXinHtml {
      * @param articleOrder 文章序号
      * @param localImgCachePath 图片本地缓存路径
      * @param simplifiedArticleContent 简体中文文章内容
-     * @param fileCache 文件缓存
      * @return 文章标题
      * @throws IOException
      * @throws InterruptedException
      */
-    public static String wxArticleSpider(String urlStr, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath, String localImgGitPath, StringBuilder simplifiedArticleContent, Map<String, List<String>> fileCache) throws IOException, InterruptedException {
+    public static String wxArticleSpider(String urlStr, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath, StringBuilder simplifiedArticleContent) throws IOException, InterruptedException {
         URL url = new URL(urlStr);
         Document doc = Jsoup.parse(url, 10000);
         //文章板块
@@ -58,18 +57,17 @@ public class ReadWeiXinHtml {
         //文章内容元素
         Element js_content = js_article.getElementById("js_content");
         Elements elements = js_content.getAllElements();
-        List<String> fileNameList = new ArrayList<String>();
         //处理元素
         for (Element e : elements) {
             if("img".equalsIgnoreCase(e.tagName())){
-                StringBuilder gitImgPath = imgHandler(e, title, cat, articleOrder, localImgCachePath, localImgGitPath, fileNameList);
+                StringBuilder gitImgPath = imgHandler(e, title, cat, articleOrder, localImgCachePath);
+                e.attr("src", gitImgPath.toString());
                 e.attr("data-src", gitImgPath.toString());
             }else if("video".equalsIgnoreCase(e.tagName()) || "iframe".equalsIgnoreCase(e.tagName())){
                 //video和iframe舍去
                 e.remove();
             }
         }
-        fileCache.put("redpaper", fileNameList);
         simplifiedArticleContent.append(js_content.html());
         return title;
     }
@@ -83,7 +81,7 @@ public class ReadWeiXinHtml {
      * @return github图片地址
      * @throws IOException
      */
-    private static StringBuilder imgHandler(Element e, String title, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath, String localImgGitPath, List<String> fileNameList) throws IOException, InterruptedException {
+    private static StringBuilder imgHandler(Element e, String title, ArticleCategoryEnum cat, String articleOrder, String localImgCachePath) throws IOException, InterruptedException {
         String imgSrc = e.attr("data-src");
         String imgFormat = e.attr("data-type");
         //图片格式处理
@@ -103,11 +101,6 @@ public class ReadWeiXinHtml {
                 os.write(buf, 0, p);
             }
         }
-        fileNameList.add(imgName);
-        //图片压缩
-        String picIn = localImgCachePath + File.separator + imgName;
-        String picOut = localImgGitPath + File.separator + imgName;
-        thumbPic(imgFormat, picIn, picOut);
         StringBuilder str = new StringBuilder();
         str.append("https://cdn.jsdelivr.net/gh/wecdn/red01@master");
         //git目录
@@ -147,6 +140,7 @@ public class ReadWeiXinHtml {
 
     /**
      * 图片压缩
+     * 经测试，该压缩方式不可靠
      * @param picIn
      * @param picOut
      * @throws IOException

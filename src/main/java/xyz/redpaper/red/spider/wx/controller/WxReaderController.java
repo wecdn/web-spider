@@ -19,6 +19,10 @@ public class WxReaderController {
     @Autowired
     private WxReaderService wxReaderService;
 
+    /**
+     * 页面跳转
+     * @return
+     */
     @GetMapping("/wx")
     public String toIndex(){
         return "wx/index";
@@ -52,10 +56,6 @@ public class WxReaderController {
             String articleOrder = request.getParameter("articleOrder");
             String articleType = request.getParameter("articleType");
             rd = wxReaderService.analysisWx(articleUrl, articleOrder, articleType);
-            if(ReturnData.STATE_NO.equals(rd.getState())){
-                //删除文件
-                wxReaderService.clearFile();
-            }
         }catch(Exception e){
             logger.error("解析微信文章发生异常: {}", e.getMessage(), e);
             rd.setState(ReturnData.STATE_NO);

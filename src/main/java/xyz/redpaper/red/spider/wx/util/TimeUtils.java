@@ -20,6 +20,11 @@ public class TimeUtils {
 
     public static final String DATE_ADN_TIME_FORMATTER_YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH-mm-ss";
 
+    public static void main(String[] args) {
+        Date todayDate = getTodayDate();
+        System.out.println(todayDate);
+    }
+
     /**
      * 获取当前日期
      * 默认格式: yyyy-MM-dd
@@ -39,14 +44,23 @@ public class TimeUtils {
         return DateTimeFormatter.ofPattern(formatter).format(now);
     }
 
+    /**
+     * 获取当前日期
+     * @return
+     */
     public static Date getTodayDate(){
         LocalDateTime now = LocalDateTime.now();
-        return Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(now.atZone(ZoneId.of("Asia/Shanghai")).toInstant());
     }
 
+    /**
+     * 获取几个小时之前的日期
+     * @param hour
+     * @return
+     */
     public static Date getTodayBeforeHourDate(Long hour){
         LocalDateTime now = LocalDateTime.now().minusHours(hour);
-        return Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(now.atZone(ZoneId.of("Asia/Shanghai")).toInstant());
     }
 
     /**

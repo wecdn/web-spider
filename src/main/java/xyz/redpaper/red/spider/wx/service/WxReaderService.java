@@ -23,11 +23,6 @@ public class WxReaderService {
     @Autowired
     private PostRepository postRepository;
 
-    //文件缓存
-    public static Map<String, List<String>> FILE_CACHE = new HashMap<String, List<String>>();
-    //模拟用户id
-    public static String USER_ID = "redpaper";
-
     public static final Integer Try_Time = 3;
 
     /**
@@ -35,8 +30,6 @@ public class WxReaderService {
      */
     @Value("${article.wx.img.local.cache.path}")
     private String localImgCachePath;
-    @Value("${article.wx.img.local.git.path}")
-    private String localImgGitPath;
 
     /**
      * 解析微信文章
@@ -51,16 +44,10 @@ public class WxReaderService {
         ReturnData rd = new ReturnData();
         //缓存文件夹
         FileUtils.newFolder(localImgCachePath);
-        //git仓库路径
-        if(StringUtils.isBlank(localImgGitPath)){
-            rd.setState(ReturnData.STATE_NO);
-            rd.setData("请先配置本地Git路径，再重启程序");
-            return rd;
-        }
         ArticleCategoryEnum articleTypeEnum = ArticleCategoryEnum.getByType(articleType);
         StringBuilder simplifiedArticleContent = new StringBuilder();
         //爬取文章
-        String articleTitle = ReadWeiXinHtml.wxArticleSpider(articleUrl, articleTypeEnum, articleOrder, localImgCachePath, localImgGitPath, simplifiedArticleContent, FILE_CACHE);
+        String articleTitle = ReadWeiXinHtml.wxArticleSpider(articleUrl, articleTypeEnum, articleOrder, localImgCachePath, simplifiedArticleContent);
         //简转繁
         S2tApi content = YesApiUtils.tryS2t(simplifiedArticleContent.toString(), Try_Time);
         S2tApi title = YesApiUtils.tryS2t(articleTitle, Try_Time);
@@ -96,20 +83,8 @@ public class WxReaderService {
             postRepository.save(post);
         }else{
             rd.setState(ReturnData.STATE_NO);
-            rd.setData("yesApi接口返回的数据无效，本次解析失败");
+            rd.setData("采集失败 - s2t接口返回的数据无效");
         }
         return rd;
-    }
-
-    /**
-     * 清空文件
-     */
-    public void clearFile() {
-        List<String> list = FILE_CACHE.get(USER_ID);
-        List<String> localImgCachePathFileList = new ArrayList<>();
-        for(String file : list){
-            localImgCachePathFileList.add(localImgCachePath + File.separator + file);
-        }
-        FileUtils.batchDelFile(localImgCachePathFileList);
     }
 }
