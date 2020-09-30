@@ -18,6 +18,13 @@ function initPage(){
     [].slice.call( document.querySelectorAll( 'select.cs-skin-underline' ) ).forEach( function(el) {
         new SelectFx(el);
     } );
+
+    $("#colorful-background-image").colorfulTab({
+        theme: "flatline",
+        backgroundImage: "true",
+        overlayColor: "#002F68",
+        overlayOpacity: "0.8"
+    });
 }
 
 /**
