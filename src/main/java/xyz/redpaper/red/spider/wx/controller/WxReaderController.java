@@ -53,9 +53,8 @@ public class WxReaderController {
         ReturnData rd = new ReturnData();
         try {
             String articleUrl = request.getParameter("articleUrl");
-            String articleOrder = request.getParameter("articleOrder");
             String articleType = request.getParameter("articleType");
-            rd = wxReaderService.analysisWx(articleUrl, articleOrder, articleType);
+            rd = wxReaderService.analysisWx(articleUrl, articleType);
         }catch(Exception e){
             logger.error("解析微信文章发生异常: {}", e.getMessage(), e);
             rd.setState(ReturnData.STATE_NO);

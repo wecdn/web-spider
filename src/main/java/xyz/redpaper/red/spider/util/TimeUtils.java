@@ -1,4 +1,4 @@
-package xyz.redpaper.red.spider.wx.util;
+package xyz.redpaper.red.spider.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -45,7 +45,7 @@ public class TimeUtils {
     }
 
     /**
-     * 获取当前日期
+     * 获取当前日期，默认上海时区
      * @return
      */
     public static Date getTodayDate(){
@@ -129,19 +129,7 @@ public class TimeUtils {
      */
     public static String getGitDatePath(){
         LocalDateTime now = LocalDateTime.now();
-        return "/"+now.getYear()+"/"+fillZero(now.getMonthValue())+"/";
+        return "/"+now.getYear()+"/"+SequenceUtils.getHundredSeq(now.getMonthValue())+"/";
     }
 
-    /**
-     * 数字补零
-     * @param i
-     * @return
-     */
-    public static String fillZero(int i){
-        if(i<10){
-            return "0"+i;
-        }else{
-            return String.valueOf(i);
-        }
-    }
 }

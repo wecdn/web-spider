@@ -35,7 +35,7 @@ div.cs-skin-boxes {
 	right: 5px;
 	-webkit-transform: none;
 	transform: none;
-	content: '\e014';
+	/*content: '\e014';*/
 }
 
 .cs-skin-boxes .cs-options {

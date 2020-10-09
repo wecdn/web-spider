@@ -1,7 +1,6 @@
-package xyz.redpaper.red.spider.wx.util;
+package xyz.redpaper.red.spider.util;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 
 /**

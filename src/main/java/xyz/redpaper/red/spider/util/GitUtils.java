@@ -1,4 +1,4 @@
-package xyz.redpaper.red.spider.wx.util;
+package xyz.redpaper.red.spider.util;
 
 /**
  * git工具类

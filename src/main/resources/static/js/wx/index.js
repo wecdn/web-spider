@@ -1,12 +1,12 @@
 $(function(){
-    initPage();
+    initStyle();
     bindBtn();
 });
 
 /**
- * 页面初始化
+ * 样式初始化
  */
-function initPage(){
+function initStyle(){
     [].slice.call( document.querySelectorAll( 'select.cs-skin-boxes' ) ).forEach( function(el) {
         new SelectFx(el, {
             stickyPlaceholder: false,
@@ -22,7 +22,7 @@ function initPage(){
     $("#colorful-background-image").colorfulTab({
         theme: "flatline",
         backgroundImage: "true",
-        overlayColor: "#002F68",
+        overlayColor: "#1E90FF",
         overlayOpacity: "0.8"
     });
 }
@@ -70,10 +70,17 @@ function analysisWx(){
         //数据，json字符串
         data: {
             articleType: $('#articleType').val(),
-            articleOrder: $('#articleOrder').val(),
             articleUrl: $('#articleUrl').val(),
         },
         beforeSend: function(){
+            if(""==$('#articleType').val()){
+                alert("请选择文章类型");
+                return false;
+            }
+            if(""==$('#articleUrl').val()){
+                alert("请录入微信文章url");
+                return false;
+            }
             loading();
         },
         complete: function(){

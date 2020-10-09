@@ -4,20 +4,16 @@ body {
 }
 #container {
     width: 850px;
-    height: 150px;
-    margin: 250px auto;
+    height: 100%;
+    margin: 10% auto;
 }
 .parameter-category{
     float: left;
-    width: 15%;
-}
-.parameter-order{
-    float: left;
-    width: 15%;
+    width: 20%;
 }
 .search {
     float: left;
-    width: 70%;
+    width: 80%;
 }
 .analysis-input {
     width: 89%;

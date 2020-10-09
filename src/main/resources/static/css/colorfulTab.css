@@ -85,6 +85,7 @@
 
 .colorful-tab-container {
   width: 100%;
+  height: calc(100vh);
   display: flex;
   flex-wrap: wrap;
   flex-direction: column; }
@@ -106,8 +107,7 @@
   transition: all .3s ease-in;
   filter: blur(2px); }
   .colorful-tab-content.active {
-    height: auto;
-    overflow: auto;
+    height: calc(100vh);
     transition-delay: .7s;
     width: auto;
     opacity: 1;
