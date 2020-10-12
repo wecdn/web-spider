@@ -45,22 +45,22 @@ public class TimeUtils {
     }
 
     /**
-     * 获取当前日期，默认上海时区
+     * 获取当前日期，默认中国上海时区
      * @return
      */
     public static Date getTodayDate(){
         LocalDateTime now = LocalDateTime.now();
-        return Date.from(now.atZone(ZoneId.of("Asia/Shanghai")).toInstant());
+        return Date.from(now.atZone(ZoneId.of(ZoneId.SHORT_IDS.get("CTT"))).toInstant());
     }
 
     /**
-     * 获取几个小时之前的日期
+     * 获取几个小时之前的日期，默认中国上海时区
      * @param hour
      * @return
      */
     public static Date getTodayBeforeHourDate(Long hour){
         LocalDateTime now = LocalDateTime.now().minusHours(hour);
-        return Date.from(now.atZone(ZoneId.of("Asia/Shanghai")).toInstant());
+        return Date.from(now.atZone(ZoneId.of(ZoneId.SHORT_IDS.get("CTT"))).toInstant());
     }
 
     /**
