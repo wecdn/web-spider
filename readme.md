@@ -1,3 +1,6 @@
+# 概要
+一个网络文章爬虫程序。
+
 ## bug列表
 ### url：https://mp.weixin.qq.com/s/vSyVM9t5RomBQGO5GejKzA
 * 爬取的img标签内容少了一部分，造成图片无法正常显示<已修改>；
